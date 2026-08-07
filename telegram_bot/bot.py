@@ -1,6 +1,11 @@
 # telegram_bot/bot.py
 
+import logging
+
 from asgiref.sync import sync_to_async
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from telegram import Bot, Update
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -8,6 +13,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
+
 from .models import TelegramProfile
 
 logger = logging.getLogger(__name__)
@@ -15,6 +21,7 @@ User = get_user_model()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.effective_user or update.message is None:
         return
 
     telegram_id = update.effective_user.id
@@ -35,6 +42,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     exists = await get_or_create_profile()
     message = (
+        f"С возвращением, @{username}! 🎉" if exists else f"Привет, @{username}! Я бот для напоминаний о привычках. 🤖"
     )
 
     await update.message.reply_text(
@@ -49,6 +57,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /help"""
+    if update.message is None:
+        return
 
     await update.message.reply_text(
         "🤖 Бот для напоминаний о привычках\n\n"
@@ -63,6 +73,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /stop"""
+    if not update.effective_user or update.message is None:
         return
 
     telegram_id = update.effective_user.id
@@ -79,6 +90,7 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def start_notified(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /start_notified"""
 
+    if not update.effective_user or update.message is None:
         return
 
     telegram_id = update.effective_user.id
@@ -95,6 +107,7 @@ async def start_notified(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def link_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /link"""
 
+    if not update.effective_user or update.message is None:
         return
 
     telegram_id = update.effective_user.id
@@ -103,10 +116,12 @@ async def link_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         profile = await sync_to_async(TelegramProfile.objects.get)(telegram_id=telegram_id)
     except TelegramProfile.DoesNotExist:
+        await update.message.reply_text("❌ Профиль не найден. Сначала используйте /start")
         return
 
     # Если уже привязан
     if profile.user:
+        await update.message.reply_text(f"✅ Ваш аккаунт уже привязан к {profile.user.email}")
         return
 
     # Если есть аргументы (email)
@@ -116,12 +131,15 @@ async def link_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             user = await sync_to_async(User.objects.get)(email=email)
         except User.DoesNotExist:
+            await update.message.reply_text("❌ Пользователь с таким email не найден.")
             return
 
         profile.user = user
         await sync_to_async(profile.save)()
+        await update.message.reply_text(f"✅ Аккаунт {user.email} успешно привязан!")
     else:
         await update.message.reply_text(
+            "📝 Для привязки аккаунта отправьте:\n" "/link ваш_email@example.com\n\n" "Например: /link admin@mail.ru"
         )
 
 
