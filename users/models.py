@@ -79,6 +79,15 @@ class User(AbstractUser):
         help_text="Необязательное поле, не используется для входа.",
     )
 
+    # Telegram ID для связи с ботом
+    telegram_id = models.BigIntegerField(
+        null=True,
+        blank=True,
+        unique=True,
+        verbose_name="Telegram ID",
+        help_text="ID пользователя в Telegram для отправки уведомлений.",
+    )
+
     # Переопределяем группы и права, чтобы не было конфликта related_name
     # с auth.User (стандартной моделью).
     groups = models.ManyToManyField(
