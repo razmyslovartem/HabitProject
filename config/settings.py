@@ -5,7 +5,6 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Это усложнение с использованием config() сознательное, понимаю что проще юзать os.getenv.
 # Делаю «по-взрослому» (как в продакшене) так как далее будем делать в средах(контейнерах) так будет понятнее.
 SECRET_KEY = config("SECRET_KEY")
