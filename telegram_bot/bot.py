@@ -4,7 +4,9 @@ from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application
+from telegram.ext import CommandHandler
+from telegram.ext import ContextTypes
 
 from .models import TelegramProfile
 

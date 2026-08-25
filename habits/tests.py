@@ -4,18 +4,18 @@
 Тесты для приложения habits.
 """
 
-import pytest
 from django.contrib.auth import get_user_model
+import pytest
 from rest_framework.test import APIClient
 
-from habits.models import Habit, Place
+from habits.models import Habit
+from habits.models import Place
 from habits.pagination import HabitPagination
-from habits.permissions import (
-    IsOwnerOrReadOnly,
-    IsOwnerOrReadOnlyForPlace,
-    IsOwnerReadWrite,
-)
-from habits.serializers import HabitSerializer, PlaceSerializer
+from habits.permissions import IsOwnerOrReadOnly
+from habits.permissions import IsOwnerOrReadOnlyForPlace
+from habits.permissions import IsOwnerReadWrite
+from habits.serializers import HabitSerializer
+from habits.serializers import PlaceSerializer
 
 User = get_user_model()
 

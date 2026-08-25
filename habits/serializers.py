@@ -2,7 +2,8 @@
 
 from rest_framework import serializers
 
-from .models import Habit, Place
+from .models import Habit
+from .models import Place
 
 
 class PlaceSerializer(serializers.ModelSerializer):

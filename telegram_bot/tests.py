@@ -4,20 +4,20 @@
 Тесты для приложения telegram_bot.
 """
 
-from datetime import time
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
-import pytest
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+import pytest
 
-from habits.models import Habit, Place
+from habits.models import Habit
+from habits.models import Place
 from telegram_bot.models import TelegramProfile
-from telegram_bot.tasks import (
-    send_daily_reminders,
-    send_telegram_message,
-    send_telegram_notification,
-)
+from telegram_bot.tasks import send_daily_reminders
+from telegram_bot.tasks import send_telegram_message
+from telegram_bot.tasks import send_telegram_notification
 
 User = get_user_model()
 

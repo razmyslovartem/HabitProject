@@ -1,13 +1,13 @@
 # config/urls.py
 
 from django.contrib import admin
-from django.urls import include, path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-
+from django.urls import include
+from django.urls import path
+from drf_spectacular.views import SpectacularAPIView
+from drf_spectacular.views import SpectacularRedocView
+from drf_spectacular.views import SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -27,4 +27,3 @@ urlpatterns = [
 # GET /api/schema/ — OpenAPI‑схема (JSON/YAML).
 # GET /api/docs/ — Swagger UI.
 # GET /api/redoc/ — ReDoc.
-
