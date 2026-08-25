@@ -5,13 +5,11 @@
 """
 
 import json
-from pathlib import Path
 
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
-from users.models import User
 from users.serializers import (
     EmailVerificationService,
     PasswordResetConfirmSerializer,
