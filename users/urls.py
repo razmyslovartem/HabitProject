@@ -2,12 +2,10 @@
 
 from django.urls import path
 
-from .views import (
-    EmailVerificationView,
-    PasswordResetConfirmView,
-    PasswordResetRequestView,
-    UserRegistrationView,
-)
+from .views import EmailVerificationView
+from .views import PasswordResetConfirmView
+from .views import PasswordResetRequestView
+from .views import UserRegistrationView
 
 app_name = "users"
 

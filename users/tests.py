@@ -6,16 +6,14 @@
 
 import json
 
-import pytest
 from django.contrib.auth import get_user_model
+import pytest
 from rest_framework.test import APIClient
 
-from users.serializers import (
-    EmailVerificationService,
-    PasswordResetConfirmSerializer,
-    PasswordResetRequestSerializer,
-    UserRegistrationSerializer,
-)
+from users.serializers import EmailVerificationService
+from users.serializers import PasswordResetConfirmSerializer
+from users.serializers import PasswordResetRequestSerializer
+from users.serializers import UserRegistrationSerializer
 
 UserModel = get_user_model()
 
