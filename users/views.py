@@ -1,24 +1,27 @@
 # users/views.py
 
 import json
-import uuid
 from pathlib import Path
+import uuid
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from rest_framework import generics, status
+from django.utils.http import urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode
+from drf_spectacular.utils import OpenApiResponse
+from drf_spectacular.utils import extend_schema
+from rest_framework import generics
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .serializers import (
-    EmailVerificationService,
-    PasswordResetConfirmSerializer,
-    PasswordResetRequestSerializer,
-    UserRegistrationSerializer,
-)
+from .serializers import EmailVerificationService
+from .serializers import PasswordResetConfirmSerializer
+from .serializers import PasswordResetRequestSerializer
+from .serializers import UserRegistrationSerializer
 
 User = get_user_model()
 
@@ -50,13 +53,24 @@ class UserRegistrationView(generics.CreateAPIView):
         )
 
 
-class EmailVerificationView(generics.GenericAPIView):
+class EmailVerificationView(APIView):
     """
     Подтверждение email по токену из «письма».
     """
 
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                description="Email успешно подтверждён.",
+            ),
+            400: OpenApiResponse(
+                description="Токен не найден или истёк.",
+            ),
+        },
+    )
     def get(self, request, token):
         tmp_dir = Path(settings.BASE_DIR) / "tmp" / "emails"
         found = False
@@ -64,12 +78,13 @@ class EmailVerificationView(generics.GenericAPIView):
         for file_path in tmp_dir.glob("verify_*.json"):
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                if data.get("token") == token:
-                    user = User.objects.get(email=data["email"])
-                    user.is_verified = True
-                    user.save()
-                    found = True
-                    break
+
+            if data.get("token") == token:
+                user = User.objects.get(email=data["email"])
+                user.is_verified = True
+                user.save()
+                found = True
+                break
 
         if not found:
             return Response(
@@ -77,7 +92,10 @@ class EmailVerificationView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        return Response({"detail": "Email успешно подтверждён."})
+        return Response(
+            {"detail": "Email успешно подтверждён."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class PasswordResetRequestView(generics.GenericAPIView):

@@ -5,20 +5,15 @@
 """
 
 import json
-from pathlib import Path
 
-import pytest
-from django.conf import settings
 from django.contrib.auth import get_user_model
+import pytest
 from rest_framework.test import APIClient
 
-from users.models import User
-from users.serializers import (
-    EmailVerificationService,
-    PasswordResetConfirmSerializer,
-    PasswordResetRequestSerializer,
-    UserRegistrationSerializer,
-)
+from users.serializers import EmailVerificationService
+from users.serializers import PasswordResetConfirmSerializer
+from users.serializers import PasswordResetRequestSerializer
+from users.serializers import UserRegistrationSerializer
 
 UserModel = get_user_model()
 
@@ -217,10 +212,41 @@ class TestUserRegistrationAPI:
         response = api_client.post("/api/users/register/", data)
         assert response.status_code == 400
 
-    def test_email_verification(self, api_client, db):
+    def test_email_verification(
+        self,
+        api_client,
+        db,
+        settings,
+        tmp_path,
+    ):
         """Тест верификации email."""
-        # Создаем пользователя
-        UserModel.objects.create_user(username="verifyuser", email="verify-api@example.com", password="pass123")
+
+        # Используем временную папку, чтобы тест не создавал файлы
+        # в настоящем tmp/emails проекта.
+        settings.BASE_DIR = tmp_path
+
+        user = UserModel.objects.create_user(
+            username="verifyuser",
+            email="verify-api@example.com",
+            password="test-password-123",
+        )
+
+        verification_token = "api-verify-token"
+
+        # Создаём тот самый файл, который затем ищет endpoint.
+        EmailVerificationService.send_verification_email(
+            user.email,
+            verification_token,
+        )
+
+        response = api_client.get(
+            f"/api/users/verify/{verification_token}/",
+        )
+
+        assert response.status_code == 200
+
+        user.refresh_from_db()
+        assert user.is_verified is True
 
         # Верифицируем
         response = api_client.get("/api/users/verify/api-verify-token/")

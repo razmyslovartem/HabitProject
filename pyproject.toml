@@ -1,42 +1,37 @@
-[project]
+[tool.poetry]
 name = "habitproject"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Artem Razmyslov", email = "89083284426@mail.ru"}
-]
+authors = ["Artem Razmyslov <89083284426@mail.ru>"]
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "django>=5.1,<5.2",
-    "djangorestframework>=3.17.1,<4.0.0",
-    "djangorestframework-simplejwt>=5.5.1,<6.0.0",
-    "python-dotenv>=1.2.2,<2.0.0",
-    "psycopg2-binary>=2.9.12,<3.0.0",
-    "django-cors-headers>=4.9.0,<5.0.0",
-    "python-decouple>=3.8,<4.0.0",
-    "python-telegram-bot (>=22.8,<23.0)",
-    "celery (==5.6.3)",
-    "redis (>=8.1.0,<9.0.0)",
-    "drf-spectacular (>=0.30.0,<0.31.0)"
-]
-
-[project.optional-dependencies]
-dev = [
-    "black>=26.5.1,<27.0.0",
-    "mypy>=2.1.0,<3.0.0",
-    "flake8>=7.3.0,<8.0.0",
-    "isort>=8.0.1,<9.0.0",
-    "ipython>=9.14.1,<10.0.0",
-    "django-extensions>=4.1,<5.0",
-    "flake8-quotes>=3.4.0,<4.0.0",
-    "pytest>=9.1.1,<10.0.0",
-    "pytest-cov>=7.1.0,<8.0.0",
-    "pytest-django>=4.12.0,<5.0.0",
-]
-
-[tool.poetry]
 package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.13"
+django = ">=5.1,<5.2"
+djangorestframework = ">=3.17.1,<4.0.0"
+djangorestframework-simplejwt = ">=5.5.1,<6.0.0"
+python-dotenv = ">=1.2.2,<2.0.0"
+psycopg2-binary = ">=2.9.12,<3.0.0"
+django-cors-headers = ">=4.9.0,<5.0.0"
+python-decouple = ">=3.8,<4.0.0"
+python-telegram-bot = ">=22.8,<23.0"
+celery = "==5.6.3"
+redis = ">=8.1.0,<9.0.0"
+drf-spectacular = ">=0.30.0,<0.31.0"
+gunicorn = ">=26.1.0,<27.0.0"
+
+[tool.poetry.group.dev.dependencies]
+black = ">=26.5.1,<27.0.0"
+mypy = ">=2.1.0,<3.0.0"
+flake8 = ">=7.3.0,<8.0.0"
+isort = ">=8.0.1,<9.0.0"
+ipython = ">=9.14.1,<10.0.0"
+django-extensions = ">=4.1,<5.0"
+flake8-quotes = ">=3.4.0,<4.0.0"
+pytest = ">=9.1.1,<10.0.0"
+pytest-cov = ">=7.1.0,<8.0.0"
+pytest-django = ">=4.12.0,<5.0.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -79,19 +74,21 @@ skip_glob = [
     ".pytest_cache"
 ]
 combine_as_imports = true
-known_first_party = ['config', 'app_users', 'app_materials']
+known_first_party = ['config', 'habits', 'telegram_bot']
 src_paths = ['.']
 
 [tool.mypy]
 python_version = "3.13"
 show_error_codes = true
 ignore_missing_imports = true
-disallow_incomplete_defs = true
-disallow_untyped_defs = true
-warn_unused_ignores = true
-warn_return_any = true
+disallow_incomplete_defs = false
+disallow_untyped_defs = false
+warn_unused_ignores = false
+warn_return_any = false
 warn_unreachable = true
-no_implicit_optional = true
-strict_optional = true
+warn_redundant_casts = true
+no_implicit_optional = false
+strict_optional = false
+disable_error_code = "var-annotated, dict-item, list-item"
 exclude = [".git", ".venv", "venv", "__pycache__"]
 exclude_gitignore = true

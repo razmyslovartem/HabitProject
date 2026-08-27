@@ -4,9 +4,10 @@ import os
 
 import django
 
-from telegram_bot.bot import run_bot
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+django.setup()
+
+from telegram_bot.bot import run_bot  # noqa: E402
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
-    django.setup()
     run_bot()

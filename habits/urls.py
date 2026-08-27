@@ -2,13 +2,11 @@
 
 from django.urls import path
 
-from .views import (
-    HabitDetailView,
-    HabitListCreateView,
-    PlaceDetailView,
-    PlaceListCreateView,
-    PublicHabitListView,
-)
+from .views import HabitDetailView
+from .views import HabitListCreateView
+from .views import PlaceDetailView
+from .views import PlaceListCreateView
+from .views import PublicHabitListView
 
 app_name = "habits"
 

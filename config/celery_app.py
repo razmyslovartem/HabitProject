@@ -7,11 +7,7 @@ from celery.schedules import crontab
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
-app = Celery(
-    "sky_habit",
-    broker="redis://127.0.0.1:6379/0",  # Явно указываем Redis
-    backend="redis://127.0.0.1:6379/0",  # Явно указываем Redis
-)
+app = Celery("sky_habit")
 
 app.config_from_object("django.conf:settings", namespace="CELERY")
 

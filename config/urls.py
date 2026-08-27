@@ -1,25 +1,23 @@
 # config/urls.py
 
 from django.contrib import admin
-from django.urls import include, path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-
+from django.urls import include
+from django.urls import path
+from drf_spectacular.views import SpectacularAPIView
+from drf_spectacular.views import SpectacularRedocView
+from drf_spectacular.views import SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
-    # JWT токены
+    # JWT токены.
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-
-    # Пользователи и привычки
+    # Пользователи.
     path("api/users/", include("users.urls")),
+    # Мои приложения.
     path("api/", include("habits.urls")),
-
     # Документация API
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
